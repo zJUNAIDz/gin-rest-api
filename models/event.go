@@ -1,8 +1,9 @@
 package models
 
 import (
-	"sum/gin-api/db"
 	"time"
+
+	"github.com/zjunaidz/gin-rest-api/db"
 )
 
 type Event struct {
@@ -26,6 +27,7 @@ func (e Event) Save() error {
 	if err != nil {
 		return err
 	}
+	defer stmt.Close()
 	result, err := stmt.Exec(e.Name, e.Description, e.Location, e.DateTime, e.UserId)
 	if err != nil {
 		return err
@@ -39,10 +41,24 @@ func (e Event) Save() error {
 	return nil
 }
 
-func GetAllEvent() []Event {
-	return events
-}
+
 
 func AddNewEvent(e Event) {
+
+}
+
+func GetEventById(id int64) (*Event, error) {
+	query := `SELECT * FROM events WHERE id = ?`
+	row := db.DB.QueryRow(query, id)
+	err := row.Err()
+	if err != nil {
+		return nil, err
+	}
+	var event Event
+	err = row.Scan(&event.Id, &event.Name, &event.Description, &event.Location, &event.DateTime, &event.UserId)
+	if err != nil {
+		return nil, err
+	}
+	return &event, nil
 
 }
