@@ -1,3 +1,5 @@
 *.db
 test/
 gin-rest-api
+.env
+*.env
