@@ -8,6 +8,7 @@ import (
 
 var DB *sql.DB
 var err error
+
 func InitDB() {
 	DB, err = sql.Open("sqlite3", "api.db")
 	if err != nil {
@@ -31,6 +32,6 @@ func CreateTable() {
 	`
 	_, err := DB.Exec(createTable)
 	if err != nil {
-		panic("failed to create table"+ err.Error())
+		panic("failed to create table" + err.Error())
 	}
 }
