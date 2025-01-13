@@ -78,8 +78,7 @@ func GetEventById(id int64) (*Event, error) {
 		return nil, err
 	}
 	return &event, nil
-
-
+}
 
 func (e Event) Update() error {
 	query := `
