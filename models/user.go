@@ -62,3 +62,24 @@ func (user User) ValidateCredentials() error {
 	return nil
 }
 
+func GetAllUsers() ([]User, error) {
+	query := `
+	SELECT * FROM users
+	`
+	rows, err := db.DB.Query(query)
+	if err != nil {
+		return nil, err
+	}
+	defer rows.Close()
+	//MS: I think it's better to use pointer to the slice of users
+	var users []User
+	for rows.Next() {
+		var user User
+		err := rows.Scan(&user.Id, &user.Email, &user.Password)
+		if err != nil {
+			return nil, err
+		}
+		users = append(users, user)
+	}
+	return users, nil
+}
