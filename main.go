@@ -10,7 +10,10 @@ import (
 )
 
 func main() {
+	db.InitDB()
+	defer db.DB.Close()
 	server := gin.Default()
+
 	server.GET("/get", handelGet)
 	server.GET("/get/events", handleGetEvents)
 	server.POST("/create/event", handleCreateEvent)
