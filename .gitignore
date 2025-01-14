@@ -3,3 +3,4 @@ test/
 gin-rest-api
 .env
 *.env
+!.example.env
