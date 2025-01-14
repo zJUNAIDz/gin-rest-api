@@ -13,7 +13,7 @@ type User struct {
 	Password string `json:"password" binding:"required"`
 }
 
-func (user User) Save() error {
+func (user *User) Save() error {
 	query := `
 	INSERT INTO users (email, password)
 	VALUES (?, ?)
@@ -32,15 +32,15 @@ func (user User) Save() error {
 	if err != nil {
 		return err
 	}
-	userId, err := result.LastInsertId()
+	_, err = result.LastInsertId()
 	if err != nil {
 		return err
 	}
-	user.Id = userId
+	// user.Id = userId
 	return nil
 }
 
-func (user User) ValidateCredentials() error {
+func (user *User) ValidateCredentials() error {
 	query := `
 	SELECT id, password
 	FROM users

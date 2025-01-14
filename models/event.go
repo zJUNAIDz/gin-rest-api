@@ -12,12 +12,12 @@ type Event struct {
 	Description string    `json:"description" binding:"required"`
 	Location    string    `json:"location" binding:"required"`
 	DateTime    time.Time `json:"datetime"`
-	UserId      int       `json:"user_id"`
+	UserId      int64       `json:"user_id"`
 }
 
 var events = []Event{}
 
-func (e Event) Save() error {
+func (e *Event) Save() error {
 	//simulating DB ops
 	query := `
 	INSERT INTO events (name, description, location, datetime, user_id)
@@ -37,7 +37,7 @@ func (e Event) Save() error {
 		return err
 	}
 	e.Id = id
-	events = append(events, e)
+	events = append(events, *e)
 	return nil
 }
 
