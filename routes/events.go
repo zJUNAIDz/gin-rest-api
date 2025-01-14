@@ -87,12 +87,18 @@ func updateEventById(context *gin.Context) {
 		return
 	}
 	// * get event by id
-	_, err = models.GetEventById(id)
+	event, err := models.GetEventById(id)
 	if err != nil {
 		context.JSON(http.StatusInternalServerError, gin.H{
 			"message": "could not fetch event by given id",
 			"error":   err.Error(),
 		})
+	}
+	if event.Id != context.GetInt64("userId") {
+		context.JSON(http.StatusUnauthorized, gin.H{
+			"message": "Unauthorized. Only owner of event can update the event",
+		})
+		return
 	}
 	var updatedEvent models.Event
 	err = context.ShouldBindJSON(&updatedEvent)
@@ -132,6 +138,12 @@ func deleteEventById(context *gin.Context) {
 		context.JSON(http.StatusInternalServerError, gin.H{
 			"message": "could not fetch event by given id",
 			"error":   err.Error(),
+		})
+		return
+	}
+	if event.Id != context.GetInt64("userId") {
+		context.JSON(http.StatusUnauthorized, gin.H{
+			"message": "Unauthorized. Only owner of event can update the event",
 		})
 		return
 	}
