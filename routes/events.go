@@ -22,7 +22,6 @@ func getAllEvents(context *gin.Context) {
 
 }
 func createNewEvent(context *gin.Context) {
-	//* expect some data from client
 
 	var event models.Event
 
@@ -35,7 +34,9 @@ func createNewEvent(context *gin.Context) {
 		return
 	}
 	// * save event
-	event.UserId = 1
+	userId := context.GetInt64("userId")
+
+	event.UserId = userId
 	event.DateTime = time.Now()
 	// * return event
 	err = event.Save()
