@@ -12,7 +12,7 @@ type Event struct {
 	Description string    `json:"description" binding:"required"`
 	Location    string    `json:"location" binding:"required"`
 	DateTime    time.Time `json:"datetime"`
-	UserId      int64       `json:"user_id"`
+	UserId      int64     `json:"user_id"`
 }
 
 var events = []Event{}
@@ -109,6 +109,40 @@ func (e Event) Delete() error {
 	}
 	defer stmt.Close()
 	_, err = stmt.Exec(e.Id)
+	if err != nil {
+		return err
+	}
+	return nil
+}
+
+func (e Event) Register(userId int64) error {
+	query := `
+	INSERT INTO registrations (event_id, user_id)
+	VALUES (?, ?)
+	`
+	stmt, err := db.DB.Prepare(query)
+	if err != nil {
+		return err
+	}
+	defer stmt.Close()
+	_, err = stmt.Exec(e.Id, userId)
+	if err != nil {
+		return err
+	}
+	return nil
+}
+
+func (e Event) Unregister(userId int64) error {
+	query := `
+	DELETE FROM registrations
+	WHERE user_id = ? AND event_id = ?
+	`
+	stmt, err := db.DB.Prepare(query)
+	if err != nil {
+		return err
+	}
+	defer stmt.Close()
+	_, err = stmt.Exec(userId, e.Id)
 	if err != nil {
 		return err
 	}
